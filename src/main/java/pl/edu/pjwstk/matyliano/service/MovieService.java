@@ -41,12 +41,12 @@ public class MovieService {
         );
     }
 
-    public Optional<Movie> updateMovie(Long id, Movie movie) {
-        Optional<Movie> result = movies.stream().filter(x -> x.getId().equals(id)).findFirst();
-        if (result.isPresent()) {
-            result.get().setCategory(movie.getCategory());
-            result.get().setTitle(movie.getTitle());
-            return result;
+    public Optional<Movie> updateMovie(Long id, Movie movieToUpdate) {
+        Optional<Movie> movie = movies.stream().filter(m -> m.getId().equals(id)).findFirst();
+        if (movie.isPresent()) {
+            movie.get().setCategory(movieToUpdate.getCategory());
+            movie.get().setTitle(movieToUpdate.getTitle());
+            return movie;
         }
         throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, NOT_FOUND
