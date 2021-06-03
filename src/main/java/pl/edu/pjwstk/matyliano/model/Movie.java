@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 import pl.edu.pjwstk.matyliano.enums.Category;
 
@@ -25,4 +26,6 @@ public class Movie {
     private String title;
     @Enumerated(EnumType.STRING)
     private Category category;
+    @NonNull
+    private boolean isAvailable = false;
 }

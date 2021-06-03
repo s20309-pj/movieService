@@ -1,7 +1,6 @@
 package pl.edu.pjwstk.matyliano.controller;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,12 +45,12 @@ public class MovieController {
     }
 
     @GetMapping("/movies/{id}")
-    public ResponseEntity<Optional<Movie>> addMovie(@PathVariable Long id) {
+    public ResponseEntity<Movie> addMovie(@PathVariable Long id) {
         return ResponseEntity.ok(movieService.getMovieById(id));
     }
 
     @PutMapping("/movies/{id}")
-    public ResponseEntity<Optional<Movie>> addMovie(@RequestBody Movie movie, @PathVariable Long id) {
+    public ResponseEntity<Movie> addMovie(@RequestBody Movie movie, @PathVariable Long id) {
         return ResponseEntity.ok(movieService.updateMovie(id, movie));
     }
 
@@ -63,6 +62,11 @@ public class MovieController {
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+    @PutMapping("/movies/{id}/isAvailable")
+    public ResponseEntity<Void> isAvailable(@PathVariable Long id){
+        movieService.isAvailable(id);
+        return ResponseEntity.ok().build();
     }
 }
 

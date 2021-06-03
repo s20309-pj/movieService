@@ -1,10 +1,10 @@
 package pl.edu.pjwstk.matyliano.service;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import pl.edu.pjwstk.matyliano.exception.ResourceNotFoundException;
 import pl.edu.pjwstk.matyliano.model.Movie;
 import pl.edu.pjwstk.matyliano.repository.MovieRepository;
 
@@ -24,23 +24,23 @@ public class MovieService {
     }
 
     public Movie addMovie(Movie movie) {
-      return movieRepository.save(movie);
+        return movieRepository.save(movie);
     }
 
-    public Optional<Movie> getMovieById(Long id) {
-      return movieRepository.findById(id);
+    public Movie getMovieById(Long id) {
+        return movieRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
-    public Optional<Movie> updateMovie(Long id, Movie movieToUpdate) {
-        Optional<Movie> movie = movieRepository.findAll().stream().filter(m -> m.getId().equals(id)).findFirst();
-        if (movie.isPresent()) {
-            movie.get().setCategory(movieToUpdate.getCategory());
-            movie.get().setTitle(movieToUpdate.getTitle());
-            return movie;
+    public Movie updateMovie(Long id, Movie movie) {
+        var movieToUpdate = getMovieById(id);
+        if (movie.getTitle() != null) {
+            movieToUpdate.setTitle((movie.getTitle()));
         }
-        throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND, NOT_FOUND
-        );
+        if (movie.getCategory() != null) {
+            movieToUpdate.setCategory(movie.getCategory());
+        }
+
+        return addMovie(movieToUpdate);
     }
 
     public void deleteMovieById(Long id) {
@@ -50,5 +50,11 @@ public class MovieService {
             );
         }
         movieRepository.deleteById(id);
+    }
+
+    public void isAvailable(Long id) {
+        var movie = getMovieById(id);
+        movie.setAvailable(true);
+        addMovie(movie);
     }
 }
